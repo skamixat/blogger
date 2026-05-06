@@ -1,0 +1,100 @@
+
+{% load static %}
+{% load blog_tags %}
+
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="{% static 'main_blog/css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <a href="{% url 'home' %}">
+        <img src="{% static 'main_blog/image/logo.png' %}">
+    </a>
+
+    <nav>
+    <div class="left">
+        {% for m in menu %}
+            <a href="{% url m.url_name %}">{{ m.title }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="right">
+        {% if request.user.is_authenticated %}
+            <span>{{ user.username }}</span> |
+            <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+            <a href="{% url 'register' %}">Регистрация</a>
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
+</nav>
+
+</header>
+
+
+<div class="main">
+
+    <!-- БОКОВОЕ МЕНЮ -->
+    <div class="sidebar">
+        {% load cache %}
+        <h3>Категории</h3>
+        <a href="{% url 'home' %}">Все категории</a>
+        {% cache 60 sidebar %}
+        {% for c in cats %}
+            {% if c.article__count > 0 %}
+            <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+        {% endif %}
+        {% endfor %}
+        {% endcache %}
+
+    </div>
+
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="content">
+
+        {% block content %}
+        {% endblock %}
+        {% if page_obj.has_other_pages %}
+        <nav class="list-pages">
+            <ul>
+            {% if page_obj.has_previous %}
+            <li class="page-num">
+                <a href ="?page={{page_obj.previous_page_number}}">&lt;</a>
+            </li>
+            {% endif %}
+                {% for p in paginator.page_range %}
+                {% if page_obj.number == p %}
+                    <li class = "page-num page-num-selected">{{ p }}</li>
+                {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2%}
+                <li class="page-num">
+                    <a href="?page={{ p }}">{{p}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-num">
+                <a href ="?page={{page_obj.next_page_number}}">&gt;</a>
+            </li>
+            {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<footer>
+    Максимка Сделал
+</footer>
+
+
+</body>
+</html>

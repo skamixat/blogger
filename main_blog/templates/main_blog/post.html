@@ -1,0 +1,9 @@
+{% extends 'main_blog/base.html' %}
+{% block content%}
+<h1> {{ post.title }}</h1>
+{% if post.photo%}
+<p><img src="{{ post.photo.url}}" class="post-image"></p>
+{%endif%}
+
+{{ post.content|linebreaks}}
+{% endblock %}

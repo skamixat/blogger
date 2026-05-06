@@ -1,0 +1,33 @@
+{% extends 'main_blog/base.html' %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+{% for p in posts %}
+
+<div class="post">
+
+    <h2>{{ p.title }}</h2>
+
+    <p>
+        {{ p.time_created }}
+    </p>
+
+    {% if p.photo %}
+        <img src="{{ p.photo.url }}">
+    {% endif %}
+
+    <p>
+        {{ p.content|linebreaks|truncatewords:50 }}
+    </p>
+
+    <a href="{{ p.get_absolute_url }}">
+        <button>Читать</button>
+    </a>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}
